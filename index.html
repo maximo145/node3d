@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Exclusiva - Tecnología y Línea Blanca</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Hide scrollbar for clean horizontal carousels while keeping functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: no
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .modal-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+<!-- HEADER CON IMAGEN GRANDE DE LOGO CENTRADA -->
+<header class="bg-white shadow-sm top-0 z-40 border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col items-center justify-center gap-4">
+
+        <!-- Logo grande centrado -->
+        <div class="flex flex-col items-center text-center cursor-pointer" onclick="filterCategory('all')">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-tr from-indigo-600 to-violet-500 shadow-xl shadow-indigo-500/20 flex items-center justify-center text-white font-black text-4xl tracking-wider transition transform hover:scale-105">
+                <i class="fa-solid fa-store"></i>
+            </div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight mt-3">Tienda Express</h1>
+            <p class="text-sm font-medium text-slate-500 tracking-wide mt-0.5">Tecnología y Línea Blanca de Vanguardia</p>
+        </div>
+
+        <!-- Controles secundarios: Buscador y acceso rápido -->
+        <div class="w-full max-w-md flex items-center gap-3 mt-2">
+            <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                <input type="text" id="searchInput" placeholder="Buscar productos..." class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-slate-50 shadow-sm transition">
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<!-- NAVEGACIÓN POR CATEGORÍAS -->
+<nav class="bg-slate-900 text-white py-3 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-3 overflow-x-auto no-scrollbar">
+        <button onclick="filterCategory('all')" id="btn-all" class="category-btn px-6 py-2 rounded-xl font-semibold text-sm transition bg-indigo-600 text-white shadow-md whitespace-nowrap">
+            <i class="fa-solid fa-border-all mr-2"></i> Todos
+        </button>
+        <button onclick="filterCategory('tecnologia')" id="btn-tecnologia" class="category-btn px-6 py-2 rounded-xl font-semibold text-sm transition bg-slate-800 text-slate-300 hover:bg-slate-700 whitespace-nowrap">
+            <i class="fa-solid fa-laptop mr-2"></i> Tecnología
+        </button>
+        <button onclick="filterCategory('linea-blanca')" id="btn-linea-blanca" class="category-btn px-6 py-2 rounded-xl font-semibold text-sm transition bg-slate-800 text-slate-300 hover:bg-slate-700 whitespace-nowrap">
+            <i class="fa-solid fa-blender mr-2"></i> Línea Blanca
+        </button>
+    </div>
+</nav>
+
+<!-- CONTENIDO PRINCIPAL: SECCIONES EN CARRUSEL -->
+<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full space-y-12">
+    <div id="catalogContainer">
+        <!-- Secciones de carrusel inyectadas dinámicamente -->
+    </div>
+</main>
+
+<!-- MODAL DE DETALLE DE PRODUCTO -->
+<div id="productModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden modal-fade-in relative border border-slate-100">
+        <button onclick="closeModal()" class="absolute top-4 right-4 bg-slate-100 hover:bg-slate-200 text-slate-600 w-10 h-10 rounded-full flex items-center justify-center transition z-10 shadow-sm">
+            <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+        <div id="modalContent" class="grid grid-cols-1 md:grid-cols-2">
+            <!-- Detalles inyectados dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-slate-900 text-slate-300 mt-16 py-10 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+        <div>
+            <h3 class="text-xl font-bold text-white tracking-tight">Tienda Express</h3>
+            <p class="text-sm text-slate-400 mt-1">Los mejores productos de tecnología y línea blanca al alcance de un clic con atención directa por WhatsApp.</p>
+        </div>
+        <div class="text-sm text-slate-500">
+            &copy; 2026 Tienda Express. Todos los derechos reservados.
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Base de datos de productos clasificados
+    const products = [
+        // Tecnología
+        {
+            id: 1,
+            name: "Laptop Gamer Ultra Pro 15\"",
+            category: "tecnologia",
+            categoryName: "Tecnología",
+            price: "$1,299.00",
+            image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&q=80&w=600",
+            description: "Potente laptop para juegos y diseño gráfico avanzado. Equipada con procesador de última generación, tarjeta gráfica dedicada de alta gama, 16GB de RAM y pantalla de alta tasa de refresco."
+        },
+        {
+            id: 2,
+            name: "Smartphone Flagship 5G 256GB",
+            category: "tecnologia",
+            categoryName: "Tecnología",
+            price: "$899.00",
+            image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=600",
+            description: "Disfruta de una cámara profesional de alta resolución, batería de larga duración con carga ultra rápida y un rendimiento impecable para multitareas exigentes."
+        },
+        {
+            id: 3,
+            name: "Tablet Multimedia 11 pulgadas",
+            category: "tecnologia",
+            categoryName: "Tecnología",
+            price: "$450.00",
+            image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=600",
+            description: "Ideal para entretenimiento, estudio y productividad ligera. Pantalla brillante con colores nítidos y sonido envolvente estéreo de 4 altavoces."
+        },
+        {
+            id: 4,
+            name: "Audífonos Inalámbricos ANC",
+            category: "tecnologia",
+            categoryName: "Tecnología",
+            price: "$199.00",
+            image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=600",
+            description: "Sumérgete en tu música favorita con la cancelación activa de ruido avanzada. Comodidad superior para uso prolongado durante todo el día."
+        },
+        {
+            id: 5,
+            name: "Smartwatch Deportivo Pro",
+            category: "tecnologia",
+            categoryName: "Tecnología",
+            price: "$249.00",
+            image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=600",
+            description: "Monitoreo cardíaco avanzado, GPS integrado, resistencia al agua y más de 100 modos deportivos para acompañar tu rutina diaria."
+        },
+
+        // Línea Blanca
+        {
+            id: 6,
+            name: "Refrigeradora Inverter No Frost 450L",
+            category: "linea-blanca",
+            categoryName: "Línea Blanca",
+            price: "$799.00",
+            image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?auto=format&fit=crop&q=80&w=600",
+            description: "Diseño elegante con ahorro de energía inteligente. Tecnología No Frost para evitar acumulación de hielo y mantener tus alimentos frescos por mucho más tiempo."
+        },
+        {
+            id: 7,
+            name: "Lavadora Automática 18 kg Carga Superior",
+            category: "linea-blanca",
+            categoryName: "Línea Blanca",
+            price: "$599.00",
+            image: "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?auto=format&fit=crop&q=80&w=600",
+            description: "Gran capacidad para lavar las prendas de toda la familia en un solo ciclo. Múltiples programas de lavado especializados para cuidar todo tipo de telas."
+        },
+        {
+            id: 8,
+            name: "Cocina a Gas 4 Hornillas con Grill",
+            category: "linea-blanca",
+            categoryName: "Línea Blanca",
+            price: "$420.00",
+            image: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&q=80&w=600",
+            description: "Quemadores de alta eficiencia, encendido eléctrico automático y horno espacioso con luz interior y función grill para preparar tus recetas favoritas."
+        },
+        {
+            id: 9,
+            name: "Microondas Digital 30L con Grill",
+            category: "linea-blanca",
+            categoryName: "Línea Blanca",
+            price: "$180.00",
+            image: "https://images.unsplash.com/photo-1574269909862-7e1d70bb8078?auto=format&fit=crop&q=80&w=600",
+            description: "Calienta, descongelar y cocina con precisión gracias a sus menús preprogramados y su panel táctil digital intuitivo y moderno."
+        },
+        {
+            id: 10,
+            name: "Aire Acondicionado Split Inverter 12000 BTU",
+            category: "linea-blanca",
+            categoryName: "Línea Blanca",
+            price: "$540.00",
+            image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=600",
+            description: "Climatización silenciosa y eficiente con tecnología Inverter para un menor consumo eléctrico y confort óptimo todo el año."
+        }
+    ];
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+    const WHATSAPP_PHONE = "51999999999"; // Número de WhatsApp de ejemplo
+
+    const catalogContainer = document.getElementById('catalogContainer');
+    const searchInput = document.getElementById('searchInput');
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderCatalog();
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            renderCatalog();
+        });
+    });
+
+    function filterCategory(category) {
+        currentFilter = category;
+
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+            btn.classList.add('bg-slate-800', 'text-slate-300');
+        });
+
+        const activeBtn = document.getElementById(`btn-${category}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+            activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+        }
+
+        renderCatalog();
+    }
+
+    function renderCatalog() {
+        catalogContainer.innerHTML = '';
+
+        const filteredProducts = products.filter(p => {
+            const matchesCategory = currentFilter === 'all' || p.category === currentFilter;
+            const matchesSearch = p.name.toLowerCase().includes(searchQuery) || p.description.toLowerCase().includes(searchQuery);
+            return matchesCategory && matchesSearch;
+        });
+
+        if (filteredProducts.length === 0) {
+            catalogContainer.innerHTML = `
+                    <div class="text-center py-20 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                        <i class="fa-solid fa-box-open text-6xl text-slate-300 mb-4"></i>
+                        <h3 class="text-xl font-bold text-slate-800">No se encontraron productos</h3>
+                        <p class="text-sm text-slate-500 mt-1">Prueba con otra palabra clave o categoría.</p>
+                    </div>
+                `;
+            return;
+        }
+
+        if (currentFilter === 'all' && !searchQuery) {
+            const categories = [
+                { key: 'tecnologia', name: 'Tecnología', icon: 'fa-laptop' },
+                { key: 'linea-blanca', name: 'Línea Blanca', icon: 'fa-blender' }
+            ];
+
+            categories.forEach(cat => {
+                const catProducts = filteredProducts.filter(p => p.category === cat.key);
+                if (catProducts.length > 0) {
+                    renderCarouselSection(cat.name, cat.key, cat.icon, catProducts);
+                }
+            });
+        } else {
+            const title = currentFilter === 'all' ? 'Resultados de Búsqueda' : (currentFilter === 'tecnologia' ? 'Tecnología' : 'Línea Blanca');
+            const icon = currentFilter === 'tecnologia' ? 'fa-laptop' : (currentFilter === 'linea-blanca' ? 'fa-blender' : 'fa-search');
+            renderCarouselSection(title, currentFilter, icon, filteredProducts);
+        }
+    }
+
+    // Renderiza cada sección en formato carrusel horizontal deslizable con flechas
+    function renderCarouselSection(sectionTitle, sectionId, iconClass, items) {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'space-y-4';
+
+        sectionDiv.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg shadow-sm">
+                            <i class="fa-solid ${iconClass}"></i>
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-900 tracking-tight">${sectionTitle}</h2>
+                    </div>
+                    <!-- Botones de navegación del carrusel -->
+                    <div class="hidden sm:flex items-center gap-2">
+                        <button onclick="scrollCarousel('${sectionId}', 'left')" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-95">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button onclick="scrollCarousel('${sectionId}', 'right')" class="w-10 h-10 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center justify-center shadow-sm transition active:scale-95">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contenedor carrusel horizontal -->
+                <div id="carousel-${sectionId}" class="flex gap-6 overflow-x-auto no-scrollbar pb-4 pt-2 px-1 snap-x scroll-smooth">
+                </div>
+            `;
+
+        catalogContainer.appendChild(sectionDiv);
+        const carouselTrack = document.getElementById(`carousel-${sectionId}`);
+
+        items.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'min-w-[260px] sm:min-w-[280px] max-w-[280px] bg-white rounded-3xl shadow-sm hover:shadow-xl border border-slate-100 transition duration-300 flex flex-col overflow-hidden group cursor-pointer snap-start flex-shrink-0';
+            card.onclick = () => openModal(product.id);
+
+            card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-square bg-slate-100">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x600/e2e8f0/475569?text=Producto'">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-xs font-bold px-3 py-1 rounded-full text-indigo-700 shadow-sm">
+                            ${product.categoryName}
+                        </span>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 group-hover:text-indigo-600 transition line-clamp-1">${product.name}</h3>
+                            <p class="text-xs text-slate-500 mt-1.5 line-clamp-2 leading-relaxed">${product.description}</p>
+                        </div>
+                        <div class="mt-5 flex items-center justify-between pt-3 border-t border-slate-100">
+                            <span class="text-lg font-black text-slate-900">${product.price}</span>
+                            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition">
+                                Ver detalle
+                            </span>
+                        </div>
+                    </div>
+                `;
+            carouselTrack.appendChild(card);
+        });
+    }
+
+    // Función para desplazar el carrusel con las flechas
+    function scrollCarousel(sectionId, direction) {
+        const carousel = document.getElementById(`carousel-${sectionId}`);
+        if (!carousel) return;
+        const scrollAmount = 320;
+        if (direction === 'left') {
+            carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        } else {
+            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+    }
+
+    // Abrir modal con la información del producto
+    function openModal(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
+        // Mensaje preconfigurado de WhatsApp con el nombre y precio del producto elegido
+        const whatsappMessage = encodeURIComponent(`Hola, estoy interesado en el producto "${product.name}" (${product.price}). ¿Podría brindarme mayor información y disponibilidad?`);
+        const whatsappUrl = `https://wa.me/${WHATSAPP_PHONE}?text=${whatsappMessage}`;
+
+        const modalContent = document.getElementById('modalContent');
+        modalContent.innerHTML = `
+                <div class="bg-slate-100 relative aspect-square md:aspect-auto flex items-center justify-center overflow-hidden">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/600x600/e2e8f0/475569?text=Producto'">
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full inline-block mb-3">
+                            ${product.categoryName}
+                        </span>
+                        <h2 class="text-2xl font-black text-slate-900 leading-snug">${product.name}</h2>
+                        <div class="text-2xl font-black text-indigo-600 my-3">${product.price}</div>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">${product.description}</p>
+                    </div>
+
+                    <div>
+                        <a href="${whatsappUrl}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-2xl flex items-center justify-center gap-3 transition shadow-lg shadow-emerald-600/20 text-base active:scale-95">
+                            <i class="fa-brands fa-whatsapp text-2xl"></i> Consultar por WhatsApp
+                        </a>
+                        <p class="text-center text-xs text-slate-400 mt-3">Te atenderemos al instante vía WhatsApp.</p>
+                    </div>
+                </div>
+            `;
+
+        document.getElementById('productModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Cerrar modal
+    function closeModal() {
+        document.getElementById('productModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    window.onclick = function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+</script>
+
+</body>
+</html>
